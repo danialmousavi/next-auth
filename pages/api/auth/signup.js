@@ -11,10 +11,15 @@ const handler=async(req,res)=>{
         if(!firstname.trim()||!lastname.trim()||!username.trim()||!email.trim()||!password.trim()){
             return res.status(422).json({message:"invalid property"})
         }
-        //is user exist 
+        // check if user exists
+        const isUserExist=await userModel.findOne({$or:[{username},{email}]})
+        if(isUserExist){
+            return res.status(422).json({message:"username or email already exist"})
+        }
+        //is user exist ✔️
         //hash password
         //generate token
-        //create
+        //create✔️
         await userModel.create({firstname,lastname,username,email,password,role:"USER"})
         return res.status(201).json({message:"user registerd successfully"})
     } catch (error) {
