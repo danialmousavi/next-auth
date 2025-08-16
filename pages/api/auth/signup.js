@@ -1,5 +1,6 @@
 import connectDB from "@/configs/db";
 import userModel from "@/models/User";
+import hashPassword, { generateToken } from "@/utils/auth";
 
 const handler=async(req,res)=>{
     if(req.method!="POST"){
@@ -16,14 +17,21 @@ const handler=async(req,res)=>{
         if(isUserExist){
             return res.status(422).json({message:"username or email already exist"})
         }
-        //is user exist ✔️
         //hash password
+        const hashedPass=await hashPassword(password);
         //generate token
-        //create✔️
-        await userModel.create({firstname,lastname,username,email,password,role:"USER"})
-        return res.status(201).json({message:"user registerd successfully"})
+        const token =generateToken({email})
+        console.log(token);
+        
+        await userModel.create({firstname,lastname,username,email,password:hashedPass,role:"USER"})
+        return res.status(201).json({message:"user registerd successfully",token})
     } catch (error) {
         return res.status(500).json({message:"unknown Error internal server Error "})
     }
 }
 export default handler
+
+        //is user exist ✔️
+        //hash password
+        //generate token
+        //create✔️
