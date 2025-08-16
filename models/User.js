@@ -1,6 +1,6 @@
 const { default: mongoose } = require("mongoose");
 
-const userSchema=mongoose.schema({
+const userSchema=mongoose.Schema({
     firstname:{
         type:"String",
         required:true
