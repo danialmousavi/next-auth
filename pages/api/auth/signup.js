@@ -1,6 +1,7 @@
 import connectDB from "@/configs/db";
 import userModel from "@/models/User";
 import hashPassword, { generateToken } from "@/utils/auth";
+import { serialize } from "cookie";
 
 const handler=async(req,res)=>{
     if(req.method!="POST"){
@@ -21,10 +22,16 @@ const handler=async(req,res)=>{
         const hashedPass=await hashPassword(password);
         //generate token
         const token =generateToken({email})
-        console.log(token);
         
-        await userModel.create({firstname,lastname,username,email,password:hashedPass,role:"USER"})
-        return res.status(201).json({message:"user registerd successfully",token})
+        //set token in cookei
+        res.setHeader("Set-Cookie",serialize("token",token,{
+            httpOnly:true,
+            maxAge:60*60*24,
+            path:"/"
+        }))
+        const user=await userModel.find({});
+        await userModel.create({firstname,lastname,username,email,password:hashedPass,role:user.length?"USER":"ADMIN"})
+        return res.status(201).json({message:"user registerd successfully"})
     } catch (error) {
         return res.status(500).json({message:"unknown Error internal server Error "})
     }
