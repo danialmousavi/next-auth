@@ -1,4 +1,4 @@
-import {hash} from "bcryptjs"
+import {hash,compare} from "bcryptjs"
 import { sign } from "jsonwebtoken";
 
 const hashPassword=async(password)=>{
@@ -12,5 +12,9 @@ const token=sign({...data},process.env.privateKey,{
     expiresIn:"24h"
 })
 return token
+}
+export const verifyPassword=async(password,hashedpassWord)=>{
+    const isValid=await compare(password,hashedpassWord);
+    return isValid
 }
 export default hashPassword
