@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 
 import "@fortawesome/fontawesome-svg-core/styles.css";
@@ -13,6 +13,18 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 function Index() {
+  const [isLoggedIn,setIsLoggedIn]=useState(false);
+  //احراز کاربر
+  const handleAuthUser=async()=>{
+      const res=await fetch("/api/auth/me");
+      if(res.status==200){
+        setIsLoggedIn(true);
+        const data=await res.json();
+      }
+    }
+  useEffect(()=>{
+    handleAuthUser();
+  },[])
   return (
     <div className="container">
       <aside className="sidebar">
@@ -20,7 +32,8 @@ function Index() {
 
         <ul className="sidebar-links">
           <>
-            {/* User is login */}
+          {isLoggedIn?(
+            <>
             <li>
               <Link href="/dashboard">
                 <span>
@@ -37,10 +50,9 @@ function Index() {
                 Logout
               </Link>
             </li>
-            {/* User is login */}
-          </>
-          <>
-            {/* User not login */}
+            </>
+          ):(
+            <>
             <li>
               <Link href="/signin">
                 <span>
@@ -57,17 +69,19 @@ function Index() {
                 Sign up
               </Link>
             </li>
-            {/* User not login */}
+            </>
+          )}
+
           </>
           {/* User is login & admin */}
-          <li>
+          {/* <li>
             <Link href="/p-admin">
               <span>
                 <FontAwesomeIcon icon={faSolarPanel} />
               </span>
               Admin panel
             </Link>
-          </li>
+          </li> */}
         </ul>
         <img className="wave" src="/Images/wave.svg" alt="wave" />
       </aside>

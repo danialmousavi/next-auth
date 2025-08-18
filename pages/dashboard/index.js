@@ -1,7 +1,6 @@
 import connectDB from "@/configs/db";
 import userModel from "@/models/User";
 import { verifyToken } from "@/utils/auth";
-import { redirect } from "next/dist/server/api-utils";
 import React from "react";
 
 function Dashboard({userInfo}) {
