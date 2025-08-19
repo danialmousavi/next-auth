@@ -11,10 +11,13 @@ import {
   faSolarPanel,
   faBars,
 } from "@fortawesome/free-solid-svg-icons";
+import Swal from "sweetalert2";
+import { useRouter } from "next/router";
 
 function Index() {
   const [isLoggedIn,setIsLoggedIn]=useState(false);
   const [isAdmin,setIsAdmin]=useState(false);
+  const route=useRouter();
   //احراز کاربر
   const handleAuthUser=async()=>{
       const res=await fetch("/api/auth/me");
@@ -28,6 +31,37 @@ function Index() {
   useEffect(()=>{
     handleAuthUser();
   },[])
+  //logout
+  const logOut=async()=>{
+   const res=await fetch("/api/auth/signout");
+    console.log(res);
+    
+    if(res.status==200){
+      setIsAdmin(false);
+      setIsLoggedIn(false);
+      Swal.fire({
+        title:"see you later",
+        text:"you have logged out",
+        icon:"success"
+      }).then(()=>{
+        route.replace("/signin")
+      })
+    }
+  }
+  const handleLogOut=async(e)=>{
+    e.preventDefault();
+    Swal.fire({
+      title:"LogOut!!",
+      text:"Are You sure?",
+      showCancelButton:true,
+      showConfirmButton:true,
+      icon:"question"
+    }).then(res=>{
+      if(res.isConfirmed){
+        logOut()
+      }
+    })
+  }
   return (
     <div className="container">
       <aside className="sidebar">
@@ -46,7 +80,7 @@ function Index() {
               </Link>
             </li>
             <li>
-              <Link href="#">
+              <Link href="#" onClick={handleLogOut}>
                 <span>
                   <FontAwesomeIcon icon={faSignOut} />
                 </span>

@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 
 function Index() {
@@ -43,6 +43,22 @@ function Index() {
       })
     }
   }
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const res = await fetch("/api/auth/me");
+        if (res.status === 200) {
+          route.replace("/"); // کاربر لاگین → بره صفحه اصلی
+        } else {
+          route.push("/signin"); // کاربر لاگین نیست → بره signin
+        }
+      } catch (error) {
+        route.push("/signin"); // خطای سرور هم باشه → signin
+      }
+    };
+    checkAuth();
+  }, []);
+
   return (
     <div className="box">
       <h1 align="center">Login Form</h1>
