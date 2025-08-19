@@ -14,14 +14,17 @@ import {
 
 function Index() {
   const [isLoggedIn,setIsLoggedIn]=useState(false);
+  const [isAdmin,setIsAdmin]=useState(false);
   //احراز کاربر
   const handleAuthUser=async()=>{
       const res=await fetch("/api/auth/me");
       if(res.status==200){
         setIsLoggedIn(true);
-        const data=await res.json();
+        const userData=await res.json();
+        setIsAdmin(userData.role=="ADMIN"?true:false);
       }
     }
+    
   useEffect(()=>{
     handleAuthUser();
   },[])
@@ -74,14 +77,16 @@ function Index() {
 
           </>
           {/* User is login & admin */}
-          {/* <li>
+          {isAdmin?(<>
+                    <li>
             <Link href="/p-admin">
               <span>
                 <FontAwesomeIcon icon={faSolarPanel} />
               </span>
               Admin panel
             </Link>
-          </li> */}
+          </li>
+          </>):null}
         </ul>
         <img className="wave" src="/Images/wave.svg" alt="wave" />
       </aside>
