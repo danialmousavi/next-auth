@@ -8,7 +8,7 @@ const handler=async(req,res)=>{
         return res.status(405).json({ message: "Method not allowed" });
     }
     try {
-            const {token}=req.cookies;
+    const {token}=req.cookies;
     if(!token){
        return res.status(401).json({message:"you are not login"})
     }
